@@ -1,5 +1,5 @@
 
-mpv-gui is a experimental GUI for the mpv command line player.
+mpv-gui is a experimental GUI for the mpv command line player, built with C# 11 and .NET 7.
 
 Design goals:
 
