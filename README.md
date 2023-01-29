@@ -13,13 +13,13 @@ in parallel with a shared backend.
 
 UI frameworks under consideration:
 
-WinForms
-WPF
-AvaloniaUI
-WinUI
-MAUI
-GTK
-QT QML
-Flutter
+- WinForms
+- WPF
+- AvaloniaUI
+- WinUI
+- MAUI
+- GTK
+- QT QML
+- Flutter
 
 The project/application name is also not yet clear.
