@@ -232,9 +232,6 @@ mpv.net specific commands
 
 mpv.net commands are used when mpv commands don't exist or lack a feature.
 
-### cycle-audio
-Switches to the next audio track and shows info about that track.
-
 ### load-audio
 Shows a file browser dialog to open external audio files.
 
@@ -271,23 +268,6 @@ the most recent file from the recent files list is loaded.
 ### playlist-add \<integer\>
 Changes the playlist position by adding the supplied integer value.
 If the position goes out of range, it jumpes to the opposite end.
-
-### playlist-first
-Jumps to the first playlist entry, if the loaded file is
-already the first entry, nothing happens.
-
-### playlist-last
-Jumps to the last playlist entry, if the loaded file is
-already the last entry, nothing happens.
-
-### playlist-random
-Jumps to a random playlist entry.
-
-### quick-bookmark
-
-On the first press a bookmark is saved, on the second
-press it is restored and removed. When a new file is
-loaded the bookmark is removed.
 
 ### reg-file-assoc \<audio|video|image\>
 Registers the file associations.
@@ -328,10 +308,6 @@ Shows available decoders.
 
 ### show-demuxers
 Shows available demuxers.
-
-### show-history
-
-Shows the history file when existing.
 
 ### show-input-editor
 Shows the input editor.
@@ -471,7 +447,6 @@ are used as defined by autofit and start-size. Default: 1500
 #### --auto-load-folder=\<yes|no\>
 
 For single files automatically load the entire directory into the playlist.
-Can be suppressed via shift key. Default: yes
 
 #### --auto-play=\<yes|no\>
 
@@ -507,10 +482,6 @@ Amount of recent files to be remembered. Default: 15
 #### --media-info=\<yes|no\>
 
 Usage of the media info library instead of mpv to access media information. Default: yes (mpv.net specific option)
-
-#### --history-filter
-
-Semicolon separated list of paths to be excluded from the history log feature.
 
 #### --video-file-extensions=\<string\>
 
@@ -726,13 +697,6 @@ Selecting multiple files in File Explorer and pressing enter will
 open the files in mpv.net. Explorer restricts this to maximum 15 files
 and the order will be random.
 
-Whenever the control key is pressed when files or URLs are opened,
-the playlist is not cleared but the files or URLs are appended to the playlist.
-This works in all mpv.net features that open files or URLs.
-
-Pressing the shift key while opening a single file will suppress loading
-all files of the folder into the playlist.
-
 In fullscreen mode clicking the top right corner closes the player.
 
 
@@ -853,12 +817,6 @@ Another way to open files is the command line which is used by
 File Explorer for existing associations.
 
 A third way is to drag and drop files on the main window.
-
-Whenever the control key is pressed when files or URLs are opened,
-the playlist is not cleared but the files or URLs are appended to the
-playlist. This works in all mpv.net features that open files or URLs.
-
-Pressing the shift key while opening a single file will suppress loading all files in the folder.
 
 Blu-ray and DVD ISO image files are supported.
 
@@ -1228,17 +1186,6 @@ Adds a negative audio delay using the following command:
 [audio-delay property](https://mpv.io/manual/master/#options-audio-delay)
 
 
-### Subtitle > Cycle/Next
-
-Shows the next subtitle track using the following command:
-
-`script-message-to mpvnet cycle-subtitles`
-
-[cycle command](https://mpv.io/manual/master/#command-interface-cycle-%3Cname%3E-[%3Cvalue%3E])
-
-[sub/sid property](https://mpv.io/manual/master/#options-sid)
-
-
 ### Subtitle > Toggle Visibility
 
 Cycles the subtitle visibility using the following command:
@@ -1508,17 +1455,6 @@ User scripts and user extensions
 
 Shows the command palette window which allows to quickly find and execute commands and key shortcuts.
 
-
-### Tools > Show History
-
-Shows a text file that contains the file history. If the file don't exist
-it asks if the file should be created in the settings folder. Once the file
-exist then the history is logged. It logges the playback history containing
-the time and filename.
-
-To ignore certain paths:
-
-script-opt = history-discard=path1;path2
 
 ### Tools > Set/clear A-B loop points
 

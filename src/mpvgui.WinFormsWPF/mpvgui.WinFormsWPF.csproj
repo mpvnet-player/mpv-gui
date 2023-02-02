@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <RootNamespace>mpvgui</RootNamespace>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AssemblyName>mpvgui</AssemblyName>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ApplicationIcon>mpv-icon.ico</ApplicationIcon>
+        <Title>mpv-gui player</Title>
+        <AssemblyVersion>0.9.0.0</AssemblyVersion>
+        <FileVersion>0.9.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="mpv-icon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\docs\Manual.md" Link="Manual.md" />
+      <None Include="..\..\README.md" Link="README.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\mpvgui\mpvgui.csproj" />
+    </ItemGroup>
+
+</Project>
