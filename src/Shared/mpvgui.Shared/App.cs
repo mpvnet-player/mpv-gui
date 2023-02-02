@@ -6,8 +6,6 @@ using System.IO;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 
-using static mpvgui.Global;
-
 namespace mpvgui
 {
     public static class App

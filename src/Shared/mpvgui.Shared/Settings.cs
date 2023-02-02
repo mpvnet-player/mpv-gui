@@ -7,8 +7,6 @@ using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
 
-using static mpvgui.Global;
-
 namespace mpvgui
 {
     [Serializable()]

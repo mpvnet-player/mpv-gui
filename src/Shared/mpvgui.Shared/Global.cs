@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 namespace mpvgui
 {
     public class Global

@@ -1,20 +1,15 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 using static libmpv;
 using static mpvgui.Global;
-using System.Text.RegularExpressions;
 
 namespace mpvgui
 {

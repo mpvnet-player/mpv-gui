@@ -13,8 +13,6 @@ using System.Windows.Forms;
 
 using Microsoft.Win32;
 
-using static mpvgui.Global;
-
 namespace mpvgui
 {
     public class Sys
@@ -131,15 +129,7 @@ namespace mpvgui
             }
         }
     }
-
-    public class MediaTrack
-    {
-        public int ID { get; set; }
-        public bool External { get; set; }
-        public string Text { get; set; } = "";
-        public string Type { get; set; }
-    }
-
+    
     public class CommandItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
