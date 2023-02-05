@@ -145,7 +145,7 @@ _       script-message-to mpvgui show-keys            #menu: View > Advanced > S
 
 _       ignore                                        #menu: Profile
 
-c       script-message-to mpvgui show-conf-editor     #menu: Settings > Show Config Editor
+Ctrl+,  script-message-to mpvgui show-conf-editor     #menu: Settings > Show Config Editor
 Ctrl+i  script-message-to mpvgui show-input-editor    #menu: Settings > Show Input Editor
 Ctrl+f  script-message-to mpvgui open-conf-folder     #menu: Settings > Open Config Folder
 

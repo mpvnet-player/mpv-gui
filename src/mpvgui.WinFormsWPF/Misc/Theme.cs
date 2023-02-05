@@ -28,6 +28,16 @@ public class Theme
 
     public Color GetColor(string key) => (Color)ColorConverter.ConvertFromString(Dictionary[key]);
 
+    public static void Init()
+    {
+        string themeContent = null;
+
+        if (File.Exists(Player.ConfigFolder + "theme.conf"))
+            themeContent = File.ReadAllText(Player.ConfigFolder + "theme.conf");
+
+        Init(themeContent, App.DefaultTheme, App.IsDarkMode ? App.DarkTheme : App.LightTheme);
+    }
+
     public static void Init(string customContent, string defaultContent, string activeTheme)
     {
         Current = null;
@@ -94,16 +104,6 @@ public class Theme
         }
 
         return list;
-    }
-
-    public static void InitTheme()
-    {
-        string themeContent = null;
-
-        if (File.Exists(Player.ConfigFolder + "theme.conf"))
-            themeContent = File.ReadAllText(Player.ConfigFolder + "theme.conf");
-
-        Init(themeContent, App.DefaultTheme, App.IsDarkMode ? App.DarkTheme : App.LightTheme);
     }
 
     public static void UpdateWpfColors()

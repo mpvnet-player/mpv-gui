@@ -23,13 +23,13 @@ static class Program
 
             if (args.Length > 0 && args[0] == "--register-file-associations")
             {
-                FileAssociation.Register(args[1], args.Skip(1).ToArray());
+                Misc.FileAssociation.Register(args[1], args.Skip(1).ToArray());
                 return;
             }
 
             App.DefaultTheme = Properties.Resources.theme;
             App.Init();
-            Theme.InitTheme();
+            Theme.Init();
             Mutex mutex = new Mutex(true, StringHelp.GetMD5Hash(App.ConfPath), out bool isFirst);
 
             if (Control.ModifierKeys.HasFlag(Keys.Shift))

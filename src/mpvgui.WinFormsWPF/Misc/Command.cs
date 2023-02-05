@@ -1,9 +1,10 @@
 ﻿
-using mpvgui.WinForms;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+
+using mpvgui.WinForms;
 
 namespace mpvgui;
 
@@ -73,9 +74,9 @@ public class Command
 
     static void Open_DVD_Or_BD_Folder(string[] args)
     {
-        var dialog = new FolderBrowser();
+        var dialog = new FolderBrowserDialog();
 
-        if (dialog.Show())
+        if (dialog.ShowDialog() == DialogResult.OK)
             Player.LoadDiskFolder(dialog.SelectedPath);
     }
 

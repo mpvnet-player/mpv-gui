@@ -123,7 +123,7 @@ public class PlayerClass
 
         ProcessCommandLine(true);
 
-        Environment.SetEnvironmentVariable("MPVNET_VERSION", App.Version.ToString());
+        Environment.SetEnvironmentVariable("MPVNET_VERSION", AppInfo.Version.ToString());
 
         mpv_error err = mpv_initialize(Handle);
 

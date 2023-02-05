@@ -95,7 +95,7 @@ namespace mpvgui
                 }
             }
 
-            Theme.InitTheme();
+            Theme.Init();
             Theme.UpdateWpfColors();
 
             if (ThemeConf != GetThemeConf())

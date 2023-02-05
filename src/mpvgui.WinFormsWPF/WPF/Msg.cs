@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Windows;
 
-using WinForms = System.Windows.Forms;
+using Forms = System.Windows.Forms;
 
 using MsgBoxEx;
 
@@ -36,7 +36,7 @@ public class Msg
             MessageBoxEx.DetailsText = details;
 
             return MessageBoxEx.OpenMessageBox((msg ?? "").ToString().Trim(),
-                WinForms.Application.ProductName, buttons, img);
+                Forms.Application.ProductName, buttons, img);
         }
 
         ApartmentState state = Thread.CurrentThread.GetApartmentState();

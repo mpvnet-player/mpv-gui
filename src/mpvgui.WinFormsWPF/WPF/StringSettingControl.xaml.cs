@@ -1,12 +1,10 @@
 ﻿
-using mpvgui;
-using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-using WinForms = System.Windows.Forms;
+using Forms = System.Windows.Forms;
 
 namespace DynamicGUI
 {
@@ -62,14 +60,15 @@ namespace DynamicGUI
             switch (StringSetting.Type)
             {
                 case "folder":
-                    FolderBrowser fb = new FolderBrowser();
-                    fb.InitialDirectory = ValueTextBox.Text;
+                    {
+                        var dialog = new Forms.FolderBrowserDialog { InitialDirectory = ValueTextBox.Text };
 
-                    if (fb.Show())
-                        ValueTextBox.Text = fb.SelectedPath;
+                        if (dialog.ShowDialog() == Forms.DialogResult.OK)
+                            ValueTextBox.Text = dialog.SelectedPath;
+                    }
                     break;
                 case "color":
-                    using (var dialog = new WinForms.ColorDialog())
+                    using (var dialog = new Forms.ColorDialog())
                     {
                         dialog.FullOpen = true;
 
@@ -82,7 +81,7 @@ namespace DynamicGUI
                             }
                         } catch {}
 
-                        if (dialog.ShowDialog() == WinForms.DialogResult.OK)
+                        if (dialog.ShowDialog() == Forms.DialogResult.OK)
                             ValueTextBox.Text = "#" + dialog.Color.ToArgb().ToString("X8");
                     }
                     break;

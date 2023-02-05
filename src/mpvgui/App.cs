@@ -1,6 +1,5 @@
 ﻿
 using System.Threading.Tasks;
-using System.Reflection;
 
 namespace mpvgui;
 
@@ -38,7 +37,7 @@ public static class App
     public static float MinimumAspectRatioAudio { get; set; }
     public static float QuickBookmark { get; set; }
 
-    public static bool IsDarkMode => (DarkMode == "system" && Sys.IsDarkTheme) || DarkMode == "always";
+    public static bool IsDarkMode => (DarkMode == "system" && OS.IsDarkTheme) || DarkMode == "always";
 
     static AppSettings _Settings;
 
@@ -85,12 +84,8 @@ public static class App
         });
     }
 
-    public static Assembly EntryAssembly { get; } = Assembly.GetEntryAssembly();
-    public static Version Version { get; } = EntryAssembly.GetName().Version;
-    public static string ExecutablePath { get; } = Process.GetCurrentProcess().MainModule.FileName;
-
     public static string About => "Copyright (C) 2000-2022 mpv-gui/mpv/mplayer\n" +
-        $"mpv-gui {Version}" + GetLastWriteTime(ExecutablePath) + "\n" +
+        $"mpv-gui {AppInfo.Version}" + GetLastWriteTime(AppInfo.ProcessPath) + "\n" +
         $"{Player.GetPropertyString("mpv-version")}" + GetLastWriteTime(Folder.Startup + "libmpv-2.dll") + "\n" +
         $"ffmpeg {Player.GetPropertyString("ffmpeg-version")}\n" + "\nGPL v2 License";
 
@@ -102,7 +97,7 @@ public static class App
         return $" ({File.GetLastWriteTime(path).ToShortDateString()})";
     }
 
-    static bool IsStoreVersion => EntryAssembly.Location.Contains("FrankSkare.mpv-gui");
+    static bool IsStoreVersion => Folder.Startup.Contains("FrankSkare.mpv-gui");
 
     static void Player_Initialized()
     {
