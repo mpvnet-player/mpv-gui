@@ -1,15 +1,13 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 using DynamicGUI;
+
+using mpvgui.Misc;
 
 namespace mpvgui
 {
@@ -34,7 +32,7 @@ namespace mpvgui
             FilterListBox.SelectedItem = SearchControl.Text.TrimEnd(':');
         }
 
-        static string GetThemeConf() => App.IsDarkMode + App.DarkTheme + App.LightTheme;
+        static string GetThemeConf() => Theme.DarkMode + App.DarkTheme + App.LightTheme;
 
         public Theme Theme => Theme.Current;
 

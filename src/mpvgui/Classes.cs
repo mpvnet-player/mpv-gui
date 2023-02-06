@@ -2,8 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Collections;
 
-using Microsoft.Win32;
-
 namespace mpvgui;
 
 public class MediaTrack
@@ -11,7 +9,7 @@ public class MediaTrack
     public int ID { get; set; }
     public bool External { get; set; }
     public string Text { get; set; } = "";
-    public string Type { get; set; }
+    public string Type { get; set; } = "";
 }
 
 public static class FileTypes
@@ -26,35 +24,25 @@ public static class FileTypes
 
     public static bool IsMedia(string extension) =>
         Video.Contains(extension) || Audio.Contains(extension) || Image.Contains(extension);
-}
 
-public static class OS
-{
-    public static bool IsDarkTheme
-    {
-        get
-        {
-            string key = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-            object value = Registry.GetValue(key, "AppsUseLightTheme", 1) ?? 1;
-            return (int)value == 0;
-        }
-    }
+    public static IEnumerable<string> GetMediaFiles(IEnumerable<string> files) => files.Where(i => IsMedia(i.Ext()));
 }
 
 public class StringLogicalComparer : IComparer, IComparer<string>
 {
     [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-    public static extern int StrCmpLogical(string x, string y);
+    static extern int StrCmpLogical(string? x, string? y);
 
-    int IComparer_Compare(object x, object y) => StrCmpLogical(x.ToString(), y.ToString());
-    int IComparer.Compare(object x, object y) => IComparer_Compare(x, y);
-    int IComparerOfString_Compare(string x, string y) => StrCmpLogical(x, y);
-    int IComparer<string>.Compare(string x, string y) => IComparerOfString_Compare(x, y);
+    static int IComparer_Compare(object? x, object? y) => StrCmpLogical(x!.ToString(), y!.ToString());
+    static int IComparerOfString_Compare(string? x, string? y) => StrCmpLogical(x, y);
+    
+    int IComparer.Compare(object? x, object? y) => IComparer_Compare(x, y);
+    int IComparer<string>.Compare(string? x, string? y) => IComparerOfString_Compare(x, y);
 }
 
 public class Input
 {
-    public static string WM_APPCOMMAND_to_mpv_key(int value) => value switch
+    public static string? WM_APPCOMMAND_to_mpv_key(int value) => value switch
     {
         5 => "SEARCH",         // BROWSER_SEARCH
         6 => "FAVORITES",      // BROWSER_FAVORITES
@@ -84,24 +72,24 @@ public class Folder
 
 public class Chapter
 {
-    public string Title { get; set; }
+    public string Title { get; set; } = "";
     public double Time { get; set; }
 
-    string _TimeDisplay;
+    string? _timeDisplay;
 
     public string TimeDisplay
     {
         get
         {
-            if (_TimeDisplay == null)
+            if (_timeDisplay == null)
             {
-                _TimeDisplay = TimeSpan.FromSeconds(Time).ToString();
+                _timeDisplay = TimeSpan.FromSeconds(Time).ToString();
 
-                if (_TimeDisplay.ContainsEx("."))
-                    _TimeDisplay = _TimeDisplay.Substring(0, _TimeDisplay.LastIndexOf("."));
+                if (_timeDisplay.ContainsEx("."))
+                    _timeDisplay = _timeDisplay[.._timeDisplay.LastIndexOf(".")];
             }
 
-            return _TimeDisplay;
+            return _timeDisplay;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -11,29 +12,29 @@ namespace mpvgui;
 
 public class PlayerClass
 {
-    public event Action<string, ArraySegment<string>> ClientMessage;  // client-message  MPV_EVENT_CLIENT_MESSAGE
-    public event Action<mpv_log_level, string>LogMessage;  // log-message         MPV_EVENT_LOG_MESSAGE
-    public event Action<mpv_end_file_reason> EndFile;      // end-file            MPV_EVENT_END_FILE
-    public event Action Shutdown;                          // shutdown            MPV_EVENT_SHUTDOWN
-    public event Action GetPropertyReply;                  // get-property-reply  MPV_EVENT_GET_PROPERTY_REPLY
-    public event Action SetPropertyReply;                  // set-property-reply  MPV_EVENT_SET_PROPERTY_REPLY
-    public event Action CommandReply;                      // command-reply       MPV_EVENT_COMMAND_REPLY
-    public event Action StartFile;                         // start-file          MPV_EVENT_START_FILE
-    public event Action FileLoaded;                        // file-loaded         MPV_EVENT_FILE_LOADED
-    public event Action VideoReconfig;                     // video-reconfig      MPV_EVENT_VIDEO_RECONFIG
-    public event Action AudioReconfig;                     // audio-reconfig      MPV_EVENT_AUDIO_RECONFIG
-    public event Action Seek;                              // seek                MPV_EVENT_SEEK
-    public event Action PlaybackRestart;                   // playback-restart    MPV_EVENT_PLAYBACK_RESTART
+    public event Action<string, ArraySegment<string>>? ClientMessage;  // client-message  MPV_EVENT_CLIENT_MESSAGE
+    public event Action<mpv_log_level, string>? LogMessage;  // log-message         MPV_EVENT_LOG_MESSAGE
+    public event Action<mpv_end_file_reason>? EndFile;       // end-file            MPV_EVENT_END_FILE
+    public event Action? Shutdown;                           // shutdown            MPV_EVENT_SHUTDOWN
+    public event Action? GetPropertyReply;                   // get-property-reply  MPV_EVENT_GET_PROPERTY_REPLY
+    public event Action? SetPropertyReply;                   // set-property-reply  MPV_EVENT_SET_PROPERTY_REPLY
+    public event Action? CommandReply;                       // command-reply       MPV_EVENT_COMMAND_REPLY
+    public event Action? StartFile;                          // start-file          MPV_EVENT_START_FILE
+    public event Action? FileLoaded;                         // file-loaded         MPV_EVENT_FILE_LOADED
+    public event Action? VideoReconfig;                      // video-reconfig      MPV_EVENT_VIDEO_RECONFIG
+    public event Action? AudioReconfig;                      // audio-reconfig      MPV_EVENT_AUDIO_RECONFIG
+    public event Action? Seek;                               // seek                MPV_EVENT_SEEK
+    public event Action? PlaybackRestart;                    // playback-restart    MPV_EVENT_PLAYBACK_RESTART
 
-    public event Action Initialized;
-    public event Action Pause;
-    public event Action ShowMenu;
-    public event Action<double> WindowScaleMpv;
-    public event Action<float> ScaleWindow;
-    public event Action<float> WindowScaleNET;
-    public event Action<int> PlaylistPosChanged;
-    public event Action<Size> VideoSizeChanged;
-    public event Action<string> MoveWindow;
+    public event Action? Initialized;
+    public event Action? Pause;
+    public event Action? ShowMenu;
+    public event Action<double>? WindowScaleMpv;
+    public event Action<float>? ScaleWindow;
+    public event Action<float>? WindowScaleNET;
+    public event Action<int>? PlaylistPosChanged;
+    public event Action<Size>? VideoSizeChanged;
+    public event Action<string>? MoveWindow;
 
     public Dictionary<string, List<Action>>               PropChangeActions { get; set; } = new Dictionary<string, List<Action>>();
     public Dictionary<string, List<Action<int>>>       IntPropChangeActions { get; set; } = new Dictionary<string, List<Action<int>>>();
@@ -146,13 +147,13 @@ public class PlayerClass
         // this means Lua scripts that use idle might not work correctly
         SetPropertyString("idle", "yes");
 
-        ObservePropertyDouble("window-scale", value => WindowScaleMpv(value));
+        ObservePropertyDouble("window-scale", value => WindowScaleMpv?.Invoke(value));
       
         ObservePropertyString("path", value => Path = value);
 
         ObservePropertyBool("pause", value => {
             Paused = value;
-            Pause();
+            Pause?.Invoke();
         });
 
         ObservePropertyInt("video-rotate", value => {
@@ -258,7 +259,7 @@ public class PlayerClass
             AutofitLarger = 1;
     }
 
-    string _InputConfContent;
+    string? _InputConfContent;
 
     public string InputConfContent {
         get {
@@ -268,7 +269,7 @@ public class PlayerClass
         }
     }
 
-    string _ConfigFolder;
+    string? _ConfigFolder;
 
     public string ConfigFolder {
         get {
@@ -321,7 +322,7 @@ public class PlayerClass
         }
     }
 
-    Dictionary<string, string> _Conf;
+    Dictionary<string, string>? _Conf;
 
     public Dictionary<string, string> Conf {
         get {
@@ -335,16 +336,16 @@ public class PlayerClass
                     foreach (var i in File.ReadAllLines(ConfPath))
                         if (i.Contains("=") && !i.TrimStart().StartsWith("#"))
                         {
-                            string key = i.Substring(0, i.IndexOf("=")).Trim();
-                            string value = i.Substring(i.IndexOf("=") + 1).Trim();
+                            string key = i[..i.IndexOf("=")].Trim();
+                            string value = i[(i.IndexOf("=") + 1)..].Trim();
 
                             if (key.StartsWith("-"))
                                 key = key.TrimStart('-');
 
-                            if (value.Contains("#") && !value.StartsWith("#") &&
+                            if (value.Contains('#') && !value.StartsWith("#") &&
                                 !value.StartsWith("'#") && !value.StartsWith("\"#"))
 
-                                value = value.Substring(0, value.IndexOf("#")).Trim();
+                                value = value[..value.IndexOf("#")].Trim();
 
                             _Conf[key] = value;
                         }
@@ -386,7 +387,7 @@ public class PlayerClass
         while (true)
         {
             IntPtr ptr = mpv_wait_event(NamedHandle, -1);
-            mpv_event evt = (mpv_event)Marshal.PtrToStructure(ptr, typeof(mpv_event));
+            mpv_event evt = (mpv_event)Marshal.PtrToStructure(ptr, typeof(mpv_event))!;
 
             try
             {
@@ -399,7 +400,7 @@ public class PlayerClass
                         return;
                     case mpv_event_id.MPV_EVENT_LOG_MESSAGE:
                         {
-                            var data = (mpv_event_log_message)Marshal.PtrToStructure(evt.data, typeof(mpv_event_log_message));
+                            var data = (mpv_event_log_message)Marshal.PtrToStructure(evt.data, typeof(mpv_event_log_message))!;
 
                             if (data.log_level == mpv_log_level.MPV_LOG_LEVEL_INFO)
                             {
@@ -418,7 +419,7 @@ public class PlayerClass
                         break;
                     case mpv_event_id.MPV_EVENT_CLIENT_MESSAGE:
                         {
-                            var data = (mpv_event_client_message)Marshal.PtrToStructure(evt.data, typeof(mpv_event_client_message));
+                            var data = (mpv_event_client_message)Marshal.PtrToStructure(evt.data, typeof(mpv_event_client_message))!;
                             string[] args = ConvertFromUtf8Strings(data.args, data.num_args);
                             ClientMessage?.Invoke(args[0], new ArraySegment<string>(args, 1, args.Length - 1));
                         }
@@ -429,7 +430,7 @@ public class PlayerClass
                         break;
                     case mpv_event_id.MPV_EVENT_END_FILE:
                         {
-                            var data = (mpv_event_end_file)Marshal.PtrToStructure(evt.data, typeof(mpv_event_end_file));
+                            var data = (mpv_event_end_file)Marshal.PtrToStructure(evt.data, typeof(mpv_event_end_file))!;
                             var reason = (mpv_end_file_reason)data.reason;
                             EndFile?.Invoke(reason);
                             FileEnded = true;
@@ -461,7 +462,7 @@ public class PlayerClass
                         break;
                     case mpv_event_id.MPV_EVENT_PROPERTY_CHANGE:
                         {
-                            var data = (mpv_event_property)Marshal.PtrToStructure(evt.data, typeof(mpv_event_property));
+                            var data = (mpv_event_property)Marshal.PtrToStructure(evt.data, typeof(mpv_event_property))!;
 
                             if (data.format == mpv_format.MPV_FORMAT_FLAG)
                             {
@@ -568,10 +569,7 @@ public class PlayerClass
         }
     }
 
-    public void SetBluRayTitle(int id)
-    {
-        LoadFiles(new[] { @"bd://" + id }, false, false);
-    }
+    public void SetBluRayTitle(int id) => LoadFiles(new[] { @"bd://" + id }, false, false);
 
     public void Command(string command)
     {
@@ -602,6 +600,7 @@ public class PlayerClass
             Marshal.FreeHGlobal(ptr);
 
         Marshal.FreeHGlobal(rootPtr);
+
         if (err < 0)
             HandleError(err, "error executing command: " + string.Join("\n", args));
     }
@@ -654,8 +653,10 @@ public class PlayerClass
     {
         mpv_error err = mpv_get_property(Handle, GetUtf8Bytes(name),
             mpv_format.MPV_FORMAT_FLAG, out IntPtr lpBuffer);
+
         if (err < 0)
             HandleError(err, "error getting property: " + name);
+
         return lpBuffer.ToInt32() != 0;
     }
 
@@ -663,6 +664,7 @@ public class PlayerClass
     {
         long val = value ? 1 : 0;
         mpv_error err = mpv_set_property(Handle, GetUtf8Bytes(name), mpv_format.MPV_FORMAT_FLAG, ref val);
+
         if (err < 0)
             HandleError(err, $"error setting property: {name} = {value}");
     }
@@ -671,8 +673,10 @@ public class PlayerClass
     {
         mpv_error err = mpv_get_property(Handle, GetUtf8Bytes(name),
             mpv_format.MPV_FORMAT_INT64, out IntPtr lpBuffer);
+
         if (err < 0 && App.DebugMode)
             HandleError(err, "error getting property: " + name);
+
         return lpBuffer.ToInt32();
     }
 
@@ -680,6 +684,7 @@ public class PlayerClass
     {
         long val = value;
         mpv_error err = mpv_set_property(Handle, GetUtf8Bytes(name), mpv_format.MPV_FORMAT_INT64, ref val);
+
         if (err < 0)
             HandleError(err, $"error setting property: {name} = {value}");
     }
@@ -687,6 +692,7 @@ public class PlayerClass
     public void SetPropertyLong(string name, long value)
     {
         mpv_error err = mpv_set_property(Handle, GetUtf8Bytes(name), mpv_format.MPV_FORMAT_INT64, ref value);
+
         if (err < 0)
             HandleError(err, $"error setting property: {name} = {value}");
     }
@@ -695,8 +701,10 @@ public class PlayerClass
     {
         mpv_error err = mpv_get_property(Handle, GetUtf8Bytes(name),
             mpv_format.MPV_FORMAT_INT64, out IntPtr lpBuffer);
+
         if (err < 0)
             HandleError(err, "error getting property: " + name);
+
         return lpBuffer.ToInt64();
     }
 
@@ -704,8 +712,10 @@ public class PlayerClass
     {
         mpv_error err = mpv_get_property(Handle, GetUtf8Bytes(name),
             mpv_format.MPV_FORMAT_DOUBLE, out double value);
+
         if (err < 0 && handleError && App.DebugMode)
             HandleError(err, "error getting property: " + name);
+
         return value;
     }
 
@@ -713,6 +723,7 @@ public class PlayerClass
     {
         double val = value;
         mpv_error err = mpv_set_property(Handle, GetUtf8Bytes(name), mpv_format.MPV_FORMAT_DOUBLE, ref val);
+
         if (err < 0)
             HandleError(err, $"error setting property: {name} = {value}");
     }
@@ -739,6 +750,7 @@ public class PlayerClass
     {
         byte[] bytes = GetUtf8Bytes(value);
         mpv_error err = mpv_set_property(Handle, GetUtf8Bytes(name), mpv_format.MPV_FORMAT_STRING, ref bytes);
+
         if (err < 0)
             HandleError(err, $"error setting property: {name} = {value}");
     }
@@ -1003,17 +1015,20 @@ public class PlayerClass
             if (string.IsNullOrEmpty(file))
                 continue;
 
-            if (file.Contains("|"))
+            if (file.Contains('|'))
                 file = file.Substring(0, file.IndexOf("|"));
 
             file = ConvertFilePath(file);
 
             string ext = file.Ext();
 
-            switch (ext)
+            if (OperatingSystem.IsWindows())
             {
-                case "avs": LoadAviSynth(); break;
-                case "lnk": file = GetShortcutTarget(file); break;
+                switch (ext)
+                {
+                    case "avs": LoadAviSynth(); break;
+                    case "lnk": file = GetShortcutTarget(file); break;
+                }
             }
 
             if (ext == "iso")
@@ -1041,12 +1056,12 @@ public class PlayerClass
             SetPropertyInt("playlist-pos", 0);
     }
 
-    public string ConvertFilePath(string path)
+    public static string ConvertFilePath(string path)
     {
-        if ((path.Contains(":/") && !path.Contains("://")) || (path.Contains(":\\") && path.Contains("/")))
+        if ((path.Contains(":/") && !path.Contains("://")) || (path.Contains(":\\") && path.Contains('/')))
             path = path.Replace("/", "\\");
 
-        if (!path.Contains(":") && !path.StartsWith("\\\\") && File.Exists(path))
+        if (!path.Contains(':') && !path.StartsWith("\\\\") && File.Exists(path))
             path = System.IO.Path.GetFullPath(path);
 
         return path;
@@ -1060,7 +1075,7 @@ public class PlayerClass
         LoadFiles(new[] { @"bd://" }, false, false);
     }
 
-    public void LoadDiskFolder(string path)
+    public static void LoadDiskFolder(string path)
     {
         Player.Command("stop");
         Thread.Sleep(500);
@@ -1077,7 +1092,7 @@ public class PlayerClass
         }
     }
 
-    static object LoadFolderLockObject = new object();
+    static readonly object LoadFolderLockObject = new object();
 
     public void LoadFolder()
     {
@@ -1098,37 +1113,44 @@ public class PlayerClass
             if (path.Contains(":/") && !path.Contains("://"))
                 path = path.Replace("/", "\\");
 
-            if (path.Contains("\\"))
-                dir = System.IO.Path.GetDirectoryName(path);
+            if (path.Contains('\\'))
+                dir = System.IO.Path.GetDirectoryName(path)!;
 
-            List<string> files = GetMediaFiles(Directory.GetFiles(dir)).ToList();
+            List<string> files = FileTypes.GetMediaFiles(Directory.GetFiles(dir)).ToList();
             files.Sort(new StringLogicalComparer());
             int index = files.IndexOf(path);
             files.Remove(path);
 
-            foreach (string i in files)
-                CommandV("loadfile", i, "append");
+            foreach (string file in files)
+                CommandV("loadfile", file, "append");
 
             if (index > 0)
                 CommandV("playlist-move", "0", (index + 1).ToString());
         }
     }
 
-    IEnumerable<string> GetMediaFiles(IEnumerable<string> files) => files.Where(i => FileTypes.IsMedia(i.Ext()));
+    bool _wasAviSynthLoaded;
 
-    bool WasAviSynthLoaded;
-
+    [SupportedOSPlatform("windows")]
     void LoadAviSynth()
     {
-        if (!WasAviSynthLoaded)
+        if (!_wasAviSynthLoaded)
         {
-            string dll = Environment.GetEnvironmentVariable("AviSynthDLL");
+            string? dll = Environment.GetEnvironmentVariable("AviSynthDLL");  // StaxRip sets it in portable mode
             Native.WinAPI.LoadLibrary(File.Exists(dll) ? dll : "AviSynth.dll");
-            WasAviSynthLoaded = true;
+            _wasAviSynthLoaded = true;
         }
     }
-    
-    string GetLanguage(string id)
+
+    [SupportedOSPlatform("windows")]
+    public static string GetShortcutTarget(string path)
+    {
+        Type? t = Type.GetTypeFromProgID("WScript.Shell");
+        dynamic? sh = Activator.CreateInstance(t!);
+        return sh?.CreateShortcut(path).TargetPath!;
+    }
+
+    static string GetLanguage(string id)
     {
         foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
             if (ci.ThreeLetterISOLanguageName == id || Convert(ci.ThreeLetterISOLanguageName) == id)
@@ -1136,29 +1158,26 @@ public class PlayerClass
 
         return id;
 
-        string Convert(string id2)
+        static string Convert(string id2) => id2 switch
         {
-            switch (id2)
-            {
-                case "bng": return "ben";
-                case "ces": return "cze";
-                case "deu": return "ger";
-                case "ell": return "gre";
-                case "eus": return "baq";
-                case "fra": return "fre";
-                case "hye": return "arm";
-                case "isl": return "ice";
-                case "kat": return "geo";
-                case "mya": return "bur";
-                case "nld": return "dut";
-                case "sqi": return "alb";
-                case "zho": return "chi";
-                default: return id2;
-            }
-        }
+            "bng" => "ben",
+            "ces" => "cze",
+            "deu" => "ger",
+            "ell" => "gre",
+            "eus" => "baq",
+            "fra" => "fre",
+            "hye" => "arm",
+            "isl" => "ice",
+            "kat" => "geo",
+            "mya" => "bur",
+            "nld" => "dut",
+            "sqi" => "alb",
+            "zho" => "chi",
+            _ => id2,
+        };
     }
 
-    string GetNativeLanguage(string name)
+    static string GetNativeLanguage(string name)
     {
         foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
             if (ci.EnglishName == name)
@@ -1167,20 +1186,13 @@ public class PlayerClass
         return name;
     }
 
-    public static string GetShortcutTarget(string path)
-    {
-        Type t = Type.GetTypeFromProgID("WScript.Shell");
-        dynamic sh = Activator.CreateInstance(t);
-        return sh.CreateShortcut(path).TargetPath;
-    }
+    public void RaiseScaleWindow(float value) => ScaleWindow?.Invoke(value);
 
-    public void RaiseScaleWindow(float value) => ScaleWindow(value);
-
-    public void RaiseMoveWindow(string value) => MoveWindow(value);
+    public void RaiseMoveWindow(string value) => MoveWindow?.Invoke(value);
     
-    public void RaiseWindowScaleNET(float value) => WindowScaleNET(value);
+    public void RaiseWindowScaleNET(float value) => WindowScaleNET?.Invoke(value);
     
-    public void RaiseShowMenu() => ShowMenu();
+    public void RaiseShowMenu() => ShowMenu?.Invoke();
 
     public void UpdateTracks()
     {
@@ -1204,7 +1216,7 @@ public class PlayerClass
             double time = GetPropertyDouble($"chapter-list/{x}/time");
 
             if (string.IsNullOrEmpty(title) ||
-                (title.Length == 12 && title.Contains(":") && title.Contains(".")))
+                (title.Length == 12 && title.Contains(':') && title.Contains(".")))
 
                 title = "Chapter " + (x + 1);
 
@@ -1334,30 +1346,30 @@ public class PlayerClass
         return tracks;
     }
 
-    void Add(MediaTrack track, object value)
+    static void Add(MediaTrack track, object? value)
     {
-        string str = value.ToStringEx().Trim();
+        string str = (value + "").Trim();
 
         if (str != "" && !(track.Text != null && track.Text.Contains(str)))
             track.Text += " " + str + ",";
     }
 
-    string[] _ProfileNames;
+    string[]? _profileNames;
 
     public string[] ProfileNames
     {
         get
         {
-            if (_ProfileNames == null)
+            if (_profileNames == null)
             {
                 string[] ignore = { "builtin-pseudo-gui", "encoding", "libmpv", "pseudo-gui", "default" };
                 string profileList = GetPropertyString("profile-list");
                 var json = profileList.FromJson<List<Dictionary<string, object>>>();
-                _ProfileNames = json.Select(i => i["name"].ToString())
-                                    .Where(i => !ignore.Contains(i)).ToArray();
+                _profileNames = json.Select(i => i["name"].ToString())
+                                    .Where(i => !ignore.Contains(i)).ToArray()!;
             }
 
-            return _ProfileNames;
+            return _profileNames;
         }
     }
 }

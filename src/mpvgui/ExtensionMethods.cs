@@ -1,7 +1,7 @@
 ﻿
 using System.Globalization;
-using System.IO;
-using System.Text.RegularExpressions;
+
+namespace mpvgui;
 
 public static class TestStringExtension
 {
@@ -47,8 +47,6 @@ public static class ConvertToStringExtension
 
         return instance.Trim();
     }
-
-    public static string ToStringEx(this object instance) => instance?.ToString() ?? "";
 }
 
 public static class ConvertStringExtension
@@ -115,7 +113,7 @@ public static class PathStringExtension
             return "";
 
         if (instance.Length > maxLength && instance.Substring(1, 2) == ":\\")
-            instance = instance.Substring(0, 3) + "...\\" + instance.FileName();
+            instance = instance[..3] + "...\\" + instance.FileName();
 
         return instance;
     }

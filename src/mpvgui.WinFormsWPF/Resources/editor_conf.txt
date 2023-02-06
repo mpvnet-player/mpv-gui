@@ -546,22 +546,6 @@ filter = UI
 url = https://github.com/mpvgui-player/mpv-gui/blob/master/docs/Manual.md#color-theme
 help = Color theme used in light mode.\nmpv.net must be restarted after a change.\nmpv.net specific option. Default: light
 
-name = show-logo
-file = mpvgui
-default = yes
-filter = UI
-help = Draws the blue mpv-gui logo ontop of the native OSC logo.
-option = yes
-option = no
-
-name = show-santa-logo
-file = mpvgui
-default = yes
-filter = UI
-help = Draws the blue mpv-gui logo with a santa hat in december, the option is called greenandgrumpy in mpv.
-option = yes
-option = no
-
 name = screenshot-directory
 file = mpv
 width = 500

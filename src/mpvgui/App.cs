@@ -5,8 +5,6 @@ namespace mpvgui;
 
 public static class App
 {
-    public static string DefaultTheme;
-
     public static List<string> TempFiles { get; } = new List<string>();
 
     public static string ConfPath { get => Player.ConfigFolder + "mpvgui.conf"; }
@@ -25,8 +23,6 @@ public static class App
     public static bool Queue { get; set; }
     public static bool RememberVolume { get; set; } = true;
     public static bool RememberWindowPosition { get; set; }
-    public static bool ShowLogo { get; set; } = true;
-    public static bool ShowSantaLogo { get; set; } = true;
 
     public static int StartThreshold { get; set; } = 1500;
     public static int RecentCount { get; set; } = 15;
@@ -36,8 +32,6 @@ public static class App
     public static float MinimumAspectRatio { get; set; }
     public static float MinimumAspectRatioAudio { get; set; }
     public static float QuickBookmark { get; set; }
-
-    public static bool IsDarkMode => (DarkMode == "system" && OS.IsDarkTheme) || DarkMode == "always";
 
     static AppSettings _Settings;
 
@@ -158,8 +152,6 @@ public static class App
             case "recent-count": RecentCount = value.ToInt(); return true;
             case "remember-volume": RememberVolume = value == "yes"; return true;
             case "remember-window-position": RememberWindowPosition = value == "yes"; return true;
-            case "show-logo": ShowLogo = value == "yes"; return true;
-            case "show-santa-logo": ShowSantaLogo = value == "yes"; return true;
             case "start-size": StartSize = value; return true;
             case "start-threshold": StartThreshold = value.ToInt(); return true;
             case "video-file-extensions": FileTypes.Video = value.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
@@ -171,18 +163,9 @@ public static class App
         }
     }
 
-    public static void CopyMpvnetCom()
-    {
-        string dir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData).AddSep() +
-            "Microsoft\\WindowsApps\\";
-
-        if (File.Exists(dir + "mpvgui.exe") && !File.Exists(dir + "mpvgui.com"))
-            File.Copy(Folder.Startup + "mpvgui.com", dir + "mpvgui.com");
-    }
-
     public static (string Title, string Path) GetTitleAndPath(string input)
     {
-        if (input.Contains("|"))
+        if (input.Contains('|'))
         {
             var a = input.Split('|');
             return (a[1], a[0]);

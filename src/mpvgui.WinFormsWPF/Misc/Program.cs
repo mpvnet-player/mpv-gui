@@ -27,7 +27,6 @@ static class Program
                 return;
             }
 
-            App.DefaultTheme = Properties.Resources.theme;
             App.Init();
             Theme.Init();
             Mutex mutex = new Mutex(true, StringHelp.GetMD5Hash(App.ConfPath), out bool isFirst);

@@ -42,7 +42,7 @@ public static class RegistryHelp
     public static void RemoveKey(string path)
     {
         try {
-            GetRootKey(path).DeleteSubKeyTree(path.Substring(5), false);
+            GetRootKey(path).DeleteSubKeyTree(path[5..], false);
         } catch { }
     }
 

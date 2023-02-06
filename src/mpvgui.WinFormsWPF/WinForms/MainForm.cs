@@ -342,10 +342,10 @@ public partial class MainForm : Form
 
             foreach (Chapter chapter in Player.GetChapters())
             {
-                var chapterMenuItem = new WpfControls.MenuItem() { Header = chapter.Title };
-                chapterMenuItem.InputGestureText = chapter.TimeDisplay;
-                chapterMenuItem.Click += (sender, args) => Player.CommandV("seek", chapter.Time.ToString(CultureInfo.InvariantCulture), "absolute");
-                chaptersMenuItem.Items.Add(chapterMenuItem);
+                var mi = new WpfControls.MenuItem() { Header = chapter.Title };
+                mi.InputGestureText = chapter.TimeDisplay;
+                mi.Click += (sender, args) => Player.CommandV("seek", chapter.Time.ToString(CultureInfo.InvariantCulture), "absolute");
+                chaptersMenuItem.Items.Add(mi);
             }
         }
 
@@ -790,7 +790,7 @@ public partial class MainForm : Form
 
         string path = Player.GetPropertyString("path");
 
-        path = Player.ConvertFilePath(path);
+        path = PlayerClass.ConvertFilePath(path);
 
         if (path.Contains("://"))
         {
@@ -1197,7 +1197,7 @@ public partial class MainForm : Form
         System.Windows.Application.Current.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
         Cursor.Position = new Point(Cursor.Position.X + 1, Cursor.Position.Y);
         GlobalHotkey.RegisterGlobalHotkeys(Handle);
-        App.RunTask(App.CopyMpvnetCom);
+        App.RunTask(Misc.Misc.CopyMpvnetCom);
         Player.Shown = true;
     }
 

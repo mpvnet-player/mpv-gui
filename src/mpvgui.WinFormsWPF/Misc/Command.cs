@@ -77,7 +77,7 @@ public class Command
         var dialog = new FolderBrowserDialog();
 
         if (dialog.ShowDialog() == DialogResult.OK)
-            Player.LoadDiskFolder(dialog.SelectedPath);
+            PlayerClass.LoadDiskFolder(dialog.SelectedPath);
     }
 
     static void PlayPause(string[] args)
