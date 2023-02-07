@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -893,12 +895,12 @@ public class PlayerClass
                 {
                     if (arg == "--profile=help")
                     {
-                        Console.WriteLine(mpvHelp.GetProfiles());
+                        Console.WriteLine(GetProfiles());
                         continue;
                     }
                     else if (arg == "--vd=help" || arg == "--ad=help")
                     {
-                        Console.WriteLine(mpvHelp.GetDecoders());
+                        Console.WriteLine(GetDecoders());
                         continue;
                     }
                     else if (arg == "--audio-device=help")
@@ -1344,14 +1346,14 @@ public class PlayerClass
         }
 
         return tracks;
-    }
 
-    static void Add(MediaTrack track, object? value)
-    {
-        string str = (value + "").Trim();
+        static void Add(MediaTrack track, object? value)
+        {
+            string str = (value + "").Trim();
 
-        if (str != "" && !(track.Text != null && track.Text.Contains(str)))
-            track.Text += " " + str + ",";
+            if (str != "" && !track.Text.Contains(str))
+                track.Text += " " + str + ",";
+        }
     }
 
     string[]? _profileNames;
@@ -1360,16 +1362,45 @@ public class PlayerClass
     {
         get
         {
-            if (_profileNames == null)
-            {
-                string[] ignore = { "builtin-pseudo-gui", "encoding", "libmpv", "pseudo-gui", "default" };
-                string profileList = GetPropertyString("profile-list");
-                var json = profileList.FromJson<List<Dictionary<string, object>>>();
-                _profileNames = json.Select(i => i["name"].ToString())
-                                    .Where(i => !ignore.Contains(i)).ToArray()!;
-            }
+            if (_profileNames != null)
+                return _profileNames;
 
-            return _profileNames;
+            string[] ignore = { "builtin-pseudo-gui", "encoding", "libmpv", "pseudo-gui", "default" };
+            string json = GetPropertyString("profile-list");
+            return _profileNames = JsonDocument.Parse(json).RootElement.EnumerateArray()
+                .Select(it => it.GetProperty("name").GetString())
+                .Where(it => !ignore.Contains(it)).ToArray()!;
         }
     }
+
+    public string GetProfiles()
+    {
+        string json = GetPropertyString("profile-list");
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var profile in JsonDocument.Parse(json).RootElement.EnumerateArray())
+        {
+            sb.Append(profile.GetProperty("name").GetString() + BR2);
+
+            foreach (var it in profile.GetProperty("options").EnumerateArray())
+                sb.AppendLine($"    {it.GetProperty("key").GetString()} = {it.GetProperty("value").GetString()}");
+
+            sb.Append(BR);
+        }
+
+        return sb.ToString();
+    }
+
+    public string GetDecoders()
+    {
+        var list = JsonDocument.Parse(GetPropertyString("decoder-list")).RootElement.EnumerateArray()
+            .Select(it => $"{it.GetProperty("codec").GetString()} - {it.GetProperty("description").GetString()}")
+            .OrderBy(it => it);
+
+        return string.Join(BR, list);
+    }
+
+    public string GetProtocols() => string.Join(BR, GetPropertyString("protocol-list").Split(',').OrderBy(i => i));
+
+    public string GetDemuxers() => string.Join(BR, GetPropertyString("demuxer-lavf-list").Split(',').OrderBy(i => i));
 }

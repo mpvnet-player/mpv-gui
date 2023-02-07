@@ -113,7 +113,7 @@ public static class App
             FileHelp.Delete(file);
     }
 
-    static Dictionary<string, string> _Conf;
+    static Dictionary<string, string>? _Conf;
 
     public static Dictionary<string, string> Conf {
         get {
@@ -123,9 +123,10 @@ public static class App
 
                 if (File.Exists(ConfPath))
                     foreach (string i in File.ReadAllLines(ConfPath))
-                        if (i.Contains("=") && !i.StartsWith("#"))
-                            _Conf[i.Substring(0, i.IndexOf("=")).Trim()] = i.Substring(i.IndexOf("=") + 1).Trim();
+                        if (i.Contains('=') && !i.StartsWith("#"))
+                            _Conf[i[..i.IndexOf("=")].Trim()] = i[(i.IndexOf("=") + 1)..].Trim();
             }
+
             return _Conf;
         }
     }
@@ -159,6 +160,7 @@ public static class App
             default:
                 if (writeError)
                     Terminal.WriteError($"unknown mpvgui.conf property: {name}");
+
                 return false;
         }
     }

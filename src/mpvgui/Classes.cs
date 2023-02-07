@@ -66,7 +66,7 @@ public class Input
 
 public class Folder
 {
-    public static string Startup { get; } = Path.GetDirectoryName(AppInfo.ProcessPath).AddSep();
+    public static string Startup { get; } = Path.GetDirectoryName(AppInfo.ProcessPath)!.AddSep();
     public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).AddSep();
 }
 

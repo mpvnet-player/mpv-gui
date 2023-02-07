@@ -30,7 +30,7 @@ public class Command
         ["show-info"] = ShowInfo,
         ["show-input-editor"] = (args) => ShowDialog(typeof(InputWindow)),
         ["show-menu"] = (args) => Player.RaiseShowMenu(),
-        ["show-profiles"] = (args) => Msg.ShowInfo(mpvHelp.GetProfiles()),
+        ["show-profiles"] = (args) => Msg.ShowInfo(Player.GetProfiles()),
         ["show-progress"] = ShowProgress,
         ["show-text"] = (args) => ShowText(args[0], Convert.ToInt32(args[1]), Convert.ToInt32(args[2])),
         ["window-scale"] = (args) => Player.RaiseWindowScaleNET(float.Parse(args[0], CultureInfo.InvariantCulture)),

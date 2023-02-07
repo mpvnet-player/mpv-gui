@@ -291,7 +291,7 @@ public partial class MainForm : Form
                     trackMenuItem.Items.Add(mi);
                 }
 
-                if (vidTracks.Count() > 0)
+                if (vidTracks.Any())
                     trackMenuItem.Items.Add(new WpfControls.Separator());
 
                 foreach (MediaTrack track in audTracks)
@@ -302,7 +302,7 @@ public partial class MainForm : Form
                     trackMenuItem.Items.Add(mi);
                 }
 
-                if (subTracks.Count() > 0)
+                if (subTracks.Any())
                     trackMenuItem.Items.Add(new WpfControls.Separator());
 
                 foreach (MediaTrack track in subTracks)
@@ -313,7 +313,7 @@ public partial class MainForm : Form
                     trackMenuItem.Items.Add(mi);
                 }
 
-                if (subTracks.Count() > 0)
+                if (subTracks.Any())
                 {
                     var mi = new WpfControls.MenuItem() { Header = "S: No subtitles" };
                     mi.Click += (sender, args) => Player.CommandV("set", "sid", "no");
@@ -321,7 +321,7 @@ public partial class MainForm : Form
                     trackMenuItem.Items.Add(mi);
                 }
 
-                if (ediTracks.Count() > 0)
+                if (ediTracks.Any())
                     trackMenuItem.Items.Add(new WpfControls.Separator());
 
                 foreach (MediaTrack track in ediTracks)
@@ -1201,10 +1201,7 @@ public partial class MainForm : Form
         Player.Shown = true;
     }
 
-    void ContextMenu_Closed(object sender, System.Windows.RoutedEventArgs e)
-    {
-        MenuAutoResetEvent.Set();
-    }
+    void ContextMenu_Closed(object sender, System.Windows.RoutedEventArgs e) => MenuAutoResetEvent.Set();
 
     protected override void OnResize(EventArgs e)
     {
