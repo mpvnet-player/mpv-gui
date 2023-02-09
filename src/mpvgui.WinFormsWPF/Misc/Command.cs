@@ -4,9 +4,10 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 
-using mpvgui.WinForms;
+using mpvgui.WinFormsWPF.WinForms;
+using mpvgui.WinFormsWPF.WPF;
 
-namespace mpvgui;
+namespace mpvgui.WinFormsWPF;
 
 public class Command
 {
@@ -53,9 +54,9 @@ public class Command
 
     static void ShowDialog(Type winType)
     {
-        Window win = Activator.CreateInstance(winType) as Window;
+        Window? win = Activator.CreateInstance(winType) as Window;
         new WindowInteropHelper(win).Owner = MainForm.Instance.Handle;
-        win.ShowDialog();
+        win?.ShowDialog();
     }
 
     static void OpenFiles(string[] args)
@@ -66,10 +67,10 @@ public class Command
             if (arg == "append")
                 append = true;
 
-        using var d = new OpenFileDialog() { Multiselect = true };
+        using var dialog = new OpenFileDialog() { Multiselect = true };
 
-        if (d.ShowDialog() == DialogResult.OK)
-            Player.LoadFiles(d.FileNames, true, append);
+        if (dialog.ShowDialog() == DialogResult.OK)
+            Player.LoadFiles(dialog.FileNames, true, append);
     }
 
     static void Open_DVD_Or_BD_Folder(string[] args)
@@ -119,6 +120,7 @@ public class Command
             else if (FileTypes.Image.Contains(path.Ext()))
             {
                 fileSize = new FileInfo(path).Length;
+
                 text = "Width: " + Player.GetPropertyInt("width") + "\n" +
                        "Height: " + Player.GetPropertyInt("height") + "\n" +
                        "Size: " + Convert.ToInt32(fileSize / 1024.0) + " KB\n" +
@@ -192,16 +194,16 @@ public class Command
 
     static void LoadAudio(string[] args)
     {
-        using var d = new OpenFileDialog();
+        using var dialog = new OpenFileDialog();
         string path = Player.GetPropertyString("path");
 
         if (File.Exists(path))
-            d.InitialDirectory = Path.GetDirectoryName(path);
+            dialog.InitialDirectory = Path.GetDirectoryName(path);
 
-        d.Multiselect = true;
+        dialog.Multiselect = true;
 
-        if (d.ShowDialog() == DialogResult.OK)
-            foreach (string i in d.FileNames)
+        if (dialog.ShowDialog() == DialogResult.OK)
+            foreach (string i in dialog.FileNames)
                 Player.CommandV("audio-add", i);
     }
 
@@ -234,23 +236,21 @@ public class Command
 
         try
         {
-            using (Process proc = new Process())
-            {
-                proc.StartInfo.FileName = System.Windows.Forms.Application.ExecutablePath;
-                proc.StartInfo.Arguments = "--register-file-associations " +
-                    perceivedType + " " + string.Join(" ", extensions);
-                proc.StartInfo.Verb = "runas";
-                proc.StartInfo.UseShellExecute = true;
-                proc.Start();
-                proc.WaitForExit();
+            using Process proc = new Process();
+            proc.StartInfo.FileName = System.Windows.Forms.Application.ExecutablePath;
+            proc.StartInfo.Arguments = "--register-file-associations " +
+                perceivedType + " " + string.Join(" ", extensions);
+            proc.StartInfo.Verb = "runas";
+            proc.StartInfo.UseShellExecute = true;
+            proc.Start();
+            proc.WaitForExit();
 
-                if (proc.ExitCode == 0)
-                    Msg.ShowInfo("File associations were successfully " + 
-                        (perceivedType == "unreg" ? "removed" : "created") +
-                        ".\n\nFile Explorer icons will refresh after process restart.");
-                else
-                    Msg.ShowError("Error creating file associations.");
-            }
+            if (proc.ExitCode == 0)
+                Msg.ShowInfo("File associations were successfully " +
+                    (perceivedType == "unreg" ? "removed" : "created") +
+                    ".\n\nFile Explorer icons will refresh after process restart.");
+            else
+                Msg.ShowError("Error creating file associations.");
         } catch { }
     }
     
@@ -262,7 +262,7 @@ public class Command
         if (count < 2)
             return;
 
-        pos = pos + Convert.ToInt32(args[0]);
+        pos += Convert.ToInt32(args[0]);
 
         if (pos < 0)
             pos = count - 1;

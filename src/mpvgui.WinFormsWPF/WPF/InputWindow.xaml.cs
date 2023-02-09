@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace mpvgui;
+namespace mpvgui.WinFormsWPF.WPF;
 
 public partial class InputWindow : Window
 {
@@ -25,7 +25,7 @@ public partial class InputWindow : Window
         DataGrid.ItemsSource = CollectionView;
     }
 
-    public Theme Theme => Theme.Current;
+    public Theme? Theme => Theme.Current;
 
     void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
@@ -81,29 +81,29 @@ public partial class InputWindow : Window
 
     void ButtonClick(object sender, RoutedEventArgs e)
     {
-        CommandItem item = ((Button)e.Source).DataContext as CommandItem;
+        CommandItem? item = ((Button)e.Source).DataContext as CommandItem;
 
         if (item is null)
             return;
 
-        LearnWindow w = new LearnWindow();
-        w.Owner = this;
-        w.InputItem = item;
-        w.ShowDialog();
+        LearnWindow window = new LearnWindow();
+        window.Owner = this;
+        window.InputItem = item;
+        window.ShowDialog();
 
         var items = new Dictionary<string, CommandItem>();
 
-        foreach (CommandItem i in CommandItem.Items)
-            items[i.Input] = i;
+        foreach (CommandItem it in CommandItem.Items)
+            items[it.Input] = it;
     }
 
     void Window_Loaded(object sender, RoutedEventArgs e) => Keyboard.Focus(SearchControl.SearchTextBox);
 
     string GetInputConfContent()
     {
-        string text = null;
+        string? text = null;
 
-        foreach (string line in Properties.Resources.input_conf.Split(new[] { "\r\n" }, StringSplitOptions.None))
+        foreach (string line in Properties.Resources.input_conf.Split(new[] { BR }, StringSplitOptions.None))
         {
             string test = line.Trim();
 
@@ -111,7 +111,7 @@ public partial class InputWindow : Window
                 text += test + BR;
         }
 
-        text = BR + text.Trim() + BR2;
+        text = BR + text?.Trim() + BR2;
 
         foreach (CommandItem item in CommandItem.Items)
         {
@@ -146,7 +146,7 @@ public partial class InputWindow : Window
         DataGrid grid = (DataGrid)sender;
 
         if (e.Command == DataGrid.DeleteCommand)
-            if (Msg.ShowQuestion($"Confirm to delete: {(grid.SelectedItem as CommandItem).Input} ({(grid.SelectedItem as CommandItem).Path})") != MessageBoxResult.OK)
+            if (Msg.ShowQuestion($"Confirm to delete: {(grid.SelectedItem as CommandItem)!.Input} ({(grid.SelectedItem as CommandItem)!.Path})") != MessageBoxResult.OK)
                 e.Handled = true;
     }
 

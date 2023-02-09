@@ -1,11 +1,9 @@
 ﻿
-#nullable enable
-
 using Microsoft.Win32;
 
-using mpvgui.Help;
+using mpvgui.WinFormsWPF.Help;
 
-namespace mpvgui.Misc;
+namespace mpvgui.WinFormsWPF.Misc;
 
 public static class FileAssociation
 {

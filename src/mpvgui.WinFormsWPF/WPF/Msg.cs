@@ -6,6 +6,8 @@ using Forms = System.Windows.Forms;
 
 using MsgBoxEx;
 
+namespace mpvgui.WinFormsWPF.WPF;
+
 public class Msg
 {
     public static void ShowInfo(object msg) => Show(msg, MessageBoxImage.Information);
@@ -29,13 +31,13 @@ public class Msg
         object msg,
         MessageBoxImage img,
         MessageBoxButton buttons = MessageBoxButton.OK,
-        string details = null)
+        string? details = null)
     {
         MessageBoxResult fn()
         {
             MessageBoxEx.DetailsText = details;
 
-            return MessageBoxEx.OpenMessageBox((msg ?? "").ToString().Trim(),
+            return MessageBoxEx.OpenMessageBox((msg + "").Trim(),
                 Forms.Application.ProductName, buttons, img);
         }
 

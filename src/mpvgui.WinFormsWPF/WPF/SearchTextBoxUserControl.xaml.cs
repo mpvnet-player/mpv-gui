@@ -3,54 +3,53 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace mpvgui
+namespace mpvgui.WinFormsWPF.WPF;
+
+public partial class SearchTextBoxUserControl : UserControl
 {
-    public partial class SearchTextBoxUserControl : UserControl
+    public bool HideClearButton { get; set; }
+
+    public SearchTextBoxUserControl()
     {
-        public bool HideClearButton { get; set; }
+        InitializeComponent();
+        DataContext = this;
+    }
 
-        public SearchTextBoxUserControl()
-        {
-            InitializeComponent();
-            DataContext = this;
-        }
+    public Theme? Theme => Theme.Current;
 
-        public Theme Theme => Theme.Current;
+    public string Text {
+        get => SearchTextBox.Text;
+        set => SearchTextBox.Text = value;
+    }
 
-        public string Text {
-            get => SearchTextBox.Text;
-            set => SearchTextBox.Text = value;
-        }
+    string? _hintText;
 
-        string _HintText;
-
-        public string HintText {
-            get => _HintText;
-            set {
-                _HintText = value;
-                UpdateControls();
-            }
-        }
-
-        void SearchClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            SearchTextBox.Text = "";
-            Keyboard.Focus(SearchTextBox);
-        }
-
-        void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
+    public string? HintText {
+        get => _hintText;
+        set {
+            _hintText = value;
             UpdateControls();
         }
+    }
 
-        void UpdateControls()
-        {
-            HintTextBlock.Text = SearchTextBox.Text == "" ? HintText : "";
+    void SearchClearButton_Click(object sender, RoutedEventArgs e)
+    {
+        SearchTextBox.Text = "";
+        Keyboard.Focus(SearchTextBox);
+    }
 
-            if (SearchTextBox.Text == "" || HideClearButton)
-                SearchClearButton.Visibility = Visibility.Hidden;
-            else
-                SearchClearButton.Visibility = Visibility.Visible;
-        }
+    void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        UpdateControls();
+    }
+
+    void UpdateControls()
+    {
+        HintTextBlock.Text = SearchTextBox.Text == "" ? HintText : "";
+
+        if (SearchTextBox.Text == "" || HideClearButton)
+            SearchClearButton.Visibility = Visibility.Hidden;
+        else
+            SearchClearButton.Visibility = Visibility.Visible;
     }
 }

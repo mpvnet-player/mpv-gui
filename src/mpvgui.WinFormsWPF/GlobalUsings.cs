@@ -5,6 +5,4 @@ global using System.Diagnostics;
 global using System.IO;
 global using System.Linq;
 
-global using mpvgui;
-
 global using static mpvgui.Global;

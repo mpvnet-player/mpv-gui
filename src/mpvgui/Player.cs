@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-using static mpvgui.Native.libmpv;
+using static mpvgui.libmpv;
 
 namespace mpvgui;
 
@@ -222,37 +222,37 @@ public class PlayerClass
         App.Settings.InputDefaultBindingsFixApplied = true;
     }
 
-    public void ProcessProperty(string name, string value)
+    public void ProcessProperty(string? name, string? value)
     {
         switch (name)
         {
             case "autofit":
                 {
-                    if (int.TryParse(value.Trim('%'), out int result))
+                    if (int.TryParse(value?.Trim('%'), out int result))
                         Autofit = result / 100f;
                 }
                 break;
             case "autofit-smaller":
                 {
-                    if (int.TryParse(value.Trim('%'), out int result))
+                    if (int.TryParse(value?.Trim('%'), out int result))
                         AutofitSmaller = result / 100f;
                 }
                 break;
             case "autofit-larger":
                 {
-                    if (int.TryParse(value.Trim('%'), out int result))
+                    if (int.TryParse(value?.Trim('%'), out int result))
                         AutofitLarger = result / 100f;
                 }
                 break;
             case "border": Border = value == "yes"; break;
             case "fs":
             case "fullscreen": Fullscreen = value == "yes"; break;
-            case "gpu-api": GPUAPI = value; break;
+            case "gpu-api": GPUAPI = value!; break;
             case "keepaspect-window": KeepaspectWindow = value == "yes"; break;
             case "screen": Screen = Convert.ToInt32(value); break;
             case "snap-window": SnapWindow = value == "yes"; break;
             case "taskbar-progress": TaskbarProgress = value == "yes"; break;
-            case "vo": VO = value; break;
+            case "vo": VO = value!; break;
             case "window-maximized": WindowMaximized = value == "yes"; break;
             case "window-minimized": WindowMinimized = value == "yes"; break;
         }
@@ -607,7 +607,7 @@ public class PlayerClass
             HandleError(err, "error executing command: " + string.Join("\n", args));
     }
 
-    public string Expand(string value)
+    public string Expand(string? value)
     {
         if (value == null)
             return "";
@@ -1000,7 +1000,7 @@ public class PlayerClass
 
     public DateTime LastLoad;
 
-    public void LoadFiles(string[] files, bool loadFolder, bool append)
+    public void LoadFiles(string[]? files, bool loadFolder, bool append)
     {
         if (files is null || files.Length == 0)
             return;
@@ -1119,7 +1119,10 @@ public class PlayerClass
                 dir = System.IO.Path.GetDirectoryName(path)!;
 
             List<string> files = FileTypes.GetMediaFiles(Directory.GetFiles(dir)).ToList();
-            files.Sort(new StringLogicalComparer());
+          
+            if (OperatingSystem.IsWindows())
+                files.Sort(new StringLogicalComparer());
+
             int index = files.IndexOf(path);
             files.Remove(path);
 
@@ -1139,10 +1142,13 @@ public class PlayerClass
         if (!_wasAviSynthLoaded)
         {
             string? dll = Environment.GetEnvironmentVariable("AviSynthDLL");  // StaxRip sets it in portable mode
-            Native.WinAPI.LoadLibrary(File.Exists(dll) ? dll : "AviSynth.dll");
+            LoadLibrary(File.Exists(dll) ? dll : "AviSynth.dll");
             _wasAviSynthLoaded = true;
         }
     }
+
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr LoadLibrary(string path);
 
     [SupportedOSPlatform("windows")]
     public static string GetShortcutTarget(string path)

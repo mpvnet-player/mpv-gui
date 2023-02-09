@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace mpvgui.Native;
+namespace mpvgui;
 
 public static class libmpv
 {

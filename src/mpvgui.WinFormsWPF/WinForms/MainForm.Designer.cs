@@ -1,5 +1,5 @@
 ﻿
-namespace mpvgui.WinForms;
+namespace mpvgui.WinFormsWPF.WinForms;
 
 partial class MainForm
 {

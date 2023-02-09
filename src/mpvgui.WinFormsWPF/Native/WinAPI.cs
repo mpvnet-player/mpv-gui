@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace mpvgui.Native;
+namespace mpvgui.WinFormsWPF.Native;
 
 public static class WinAPI
 {
@@ -97,7 +97,9 @@ public static class WinAPI
     public static bool GetDwmWindowRect(IntPtr handle, out RECT rect)
     {
         const uint DWMWA_EXTENDED_FRAME_BOUNDS = 9;
-        return 0 == DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out rect, (uint)Marshal.SizeOf<RECT>());
+
+        return 0 == DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS,
+            out rect, (uint)Marshal.SizeOf<RECT>());
     }
 
     public static Rectangle GetWorkingArea(IntPtr handle, Rectangle workingArea)

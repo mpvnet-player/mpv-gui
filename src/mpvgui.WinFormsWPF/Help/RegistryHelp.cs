@@ -1,9 +1,7 @@
 ﻿
-#nullable enable
-
 using Microsoft.Win32;
 
-namespace mpvgui.Help;
+namespace mpvgui.WinFormsWPF.Help;
 
 public static class RegistryHelp
 {

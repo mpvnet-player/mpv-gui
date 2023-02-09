@@ -131,31 +131,31 @@ public static class App
         }
     }
 
-    public static bool ProcessProperty(string name, string value, bool writeError = false)
+    public static bool ProcessProperty(string? name, string? value, bool writeError = false)
     {
         switch (name)
         {
-            case "audio-file-extensions": FileTypes.Audio = value.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
+            case "audio-file-extensions": FileTypes.Audio = value!.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
             case "auto-load-folder": AutoLoadFolder = value == "yes"; return true;
             case "auto-play": AutoPlay = value == "yes"; return true;
-            case "autofit-audio": AutofitAudio = value.Trim('%').ToInt() / 100f; return true;
-            case "autofit-image": AutofitImage = value.Trim('%').ToInt() / 100f; return true;
-            case "dark-mode": DarkMode = value; return true;
-            case "dark-theme": DarkTheme = value.Trim('\'', '"'); return true;
+            case "autofit-audio": AutofitAudio = value!.Trim('%').ToInt() / 100f; return true;
+            case "autofit-image": AutofitImage = value!.Trim('%').ToInt() / 100f; return true;
+            case "dark-mode": DarkMode = value!; return true;
+            case "dark-theme": DarkTheme = value!.Trim('\'', '"'); return true;
             case "debug-mode": DebugMode = value == "yes"; return true;
-            case "image-file-extensions": FileTypes.Image = value.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
-            case "light-theme": LightTheme = value.Trim('\'', '"'); return true;
+            case "image-file-extensions": FileTypes.Image = value!.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
+            case "light-theme": LightTheme = value!.Trim('\'', '"'); return true;
             case "media-info": MediaInfo = value == "yes"; return true;
-            case "minimum-aspect-ratio-audio": MinimumAspectRatioAudio = value.ToFloat(); return true;
-            case "minimum-aspect-ratio": MinimumAspectRatio = value.ToFloat(); return true;
-            case "process-instance": ProcessInstance = value; return true;
+            case "minimum-aspect-ratio-audio": MinimumAspectRatioAudio = value!.ToFloat(); return true;
+            case "minimum-aspect-ratio": MinimumAspectRatio = value!.ToFloat(); return true;
+            case "process-instance": ProcessInstance = value!; return true;
             case "queue": Queue = value == "yes"; return true;
-            case "recent-count": RecentCount = value.ToInt(); return true;
+            case "recent-count": RecentCount = value!.ToInt(); return true;
             case "remember-volume": RememberVolume = value == "yes"; return true;
             case "remember-window-position": RememberWindowPosition = value == "yes"; return true;
-            case "start-size": StartSize = value; return true;
-            case "start-threshold": StartThreshold = value.ToInt(); return true;
-            case "video-file-extensions": FileTypes.Video = value.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
+            case "start-size": StartSize = value!; return true;
+            case "start-threshold": StartThreshold = value!.ToInt(); return true;
+            case "video-file-extensions": FileTypes.Video = value!.Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries); return true;
 
             default:
                 if (writeError)

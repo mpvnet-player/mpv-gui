@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using System.Threading;
 
-using mpvgui.Native;
+using mpvgui.WinFormsWPF.Native;
 
-namespace mpvgui;
+namespace mpvgui.WinFormsWPF;
 
 static class Program
 {

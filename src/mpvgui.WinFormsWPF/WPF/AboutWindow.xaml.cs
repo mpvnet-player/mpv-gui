@@ -2,20 +2,19 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace mpvgui
+namespace mpvgui.WinFormsWPF;
+
+public partial class AboutWindow : Window
 {
-    public partial class AboutWindow : Window
+    public AboutWindow()
     {
-        public AboutWindow()
-        {
-            InitializeComponent();
-            DataContext = this;
-            ContentBlock.Text = App.About;
-        }
-
-        protected override void OnPreviewKeyDown(KeyEventArgs e) => Close();
-        protected override void OnMouseDown(MouseButtonEventArgs e) => Close();
-
-        public Theme Theme => Theme.Current;
+        InitializeComponent();
+        DataContext = this;
+        ContentBlock.Text = App.About;
     }
+
+    protected override void OnPreviewKeyDown(KeyEventArgs e) => Close();
+    protected override void OnMouseDown(MouseButtonEventArgs e) => Close();
+
+    public static Theme? Theme => Theme.Current;
 }

@@ -5,7 +5,7 @@ namespace mpvgui;
 
 public static class TestStringExtension
 {
-    public static bool ContainsEx(this string instance, string value)
+    public static bool ContainsEx(this string? instance, string? value)
     {
         if (!string.IsNullOrEmpty(instance) && !string.IsNullOrEmpty(value))
             return instance.Contains(value);
@@ -13,7 +13,7 @@ public static class TestStringExtension
         return false;
     }
 
-    public static bool StartsWithEx(this string instance, string value)
+    public static bool StartsWithEx(this string? instance, string? value)
     {
         if (instance != null && value != null)
             return instance.StartsWith(value);
@@ -40,7 +40,7 @@ public static class ConvertToStringExtension
         return "";
     }
 
-    public static string TrimEx(this string instance)
+    public static string TrimEx(this string? instance)
     {
         if (instance == null)
             return "";

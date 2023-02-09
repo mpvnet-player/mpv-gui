@@ -1,12 +1,10 @@
 ﻿
-#nullable enable
-
 using System.Windows;
 using System.Windows.Media;
 
 using Microsoft.Win32;
 
-namespace mpvgui;
+namespace mpvgui.WinFormsWPF;
 
 public class Theme
 {

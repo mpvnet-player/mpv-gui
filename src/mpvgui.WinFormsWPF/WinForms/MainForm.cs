@@ -4,29 +4,30 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 
 using MsgBoxEx;
 
 using WpfControls = System.Windows.Controls;
 
-using static mpvgui.Native.WinAPI;
+using mpvgui.WinFormsWPF.WPF;
+using mpvgui.WinFormsWPF.Misc;
 
-namespace mpvgui.WinForms;
+using static mpvgui.WinFormsWPF.Native.WinAPI;
+
+namespace mpvgui.WinFormsWPF.WinForms;
 
 public partial class MainForm : Form
 {
     public SnapManager SnapManager = new SnapManager();
-    public ElementHost CommandPaletteHost { get; set; }
     public IntPtr mpvWindowHandle { get; set; }
     public Dictionary<string, WpfControls.MenuItem> MenuItemDuplicate = new Dictionary<string, WpfControls.MenuItem>();
 
-    public static Form Instance;
-    new WpfControls.ContextMenu ContextMenu { get; set; }
+    public static Form? Instance;
+    WpfControls.ContextMenu? ContextMenu { get; set; }
     AutoResetEvent MenuAutoResetEvent { get; } = new AutoResetEvent(false);
     Point LastCursorPosition;
-    Taskbar Taskbar;
+    Taskbar? Taskbar;
 
     int LastCursorChanged;
     int LastCycleFullscreen;
@@ -190,7 +191,7 @@ public partial class MainForm : Form
 
             ShowCursor();
             UpdateMenu();
-            ContextMenu.IsOpen = true;
+            ContextMenu!.IsOpen = true;
         });
     }
 
@@ -250,8 +251,6 @@ public partial class MainForm : Form
     void PropChangeFullscreen(bool value) => BeginInvoke(() => CycleFullscreen(value));
 
     bool IsFullscreen => WindowState == FormWindowState.Maximized && FormBorderStyle == FormBorderStyle.None;
-
-    bool IsCommandPaletteVissible() => CommandPaletteHost != null && CommandPaletteHost.Visible;
 
     bool KeepSize() => App.StartSize == "session" || App.StartSize == "always";
 
@@ -429,11 +428,11 @@ public partial class MainForm : Form
         }
     }
 
-    public WpfControls.MenuItem FindMenuItem(string text) => FindMenuItem(text, ContextMenu.Items);
+    public WpfControls.MenuItem? FindMenuItem(string text) => FindMenuItem(text, ContextMenu?.Items);
 
-    WpfControls.MenuItem FindMenuItem(string text, WpfControls.ItemCollection items)
+    WpfControls.MenuItem? FindMenuItem(string text, WpfControls.ItemCollection? items)
     {
-        foreach (object item in items)
+        foreach (object item in items!)
         {
             if (item is WpfControls.MenuItem mi)
             {
@@ -442,13 +441,14 @@ public partial class MainForm : Form
 
                 if (mi.Items.Count > 0)
                 {
-                    WpfControls.MenuItem val = FindMenuItem(text, mi.Items);
+                    WpfControls.MenuItem? val = FindMenuItem(text, mi.Items);
 
                     if (val != null)
                         return val;
                 }
             }
         }
+
         return null;
     }
 
@@ -745,7 +745,7 @@ public partial class MainForm : Form
             }
             else
             {
-                var menuItem = MenuHelp.Add(ContextMenu.Items, tempItem.Path);             
+                var menuItem = MenuHelp.Add(ContextMenu?.Items, tempItem.Path);             
 
                 if (menuItem != null)
                 {
@@ -816,7 +816,7 @@ public partial class MainForm : Form
 
     void SetTitleInternal()
     {
-        string title = Title;
+        string? title = Title;
 
         if (title == "${filename}" && Player.Path.ContainsEx("://"))
             title = "${media-title}";
@@ -869,10 +869,10 @@ public partial class MainForm : Form
         }
     }
 
-    string _Title;
+    string? _title;
 
-    public string Title {
-        get => _Title;
+    public string? Title {
+        get => _title;
         set {
             if (string.IsNullOrEmpty(value))
                 return;
@@ -880,7 +880,7 @@ public partial class MainForm : Form
             if (value.EndsWith("} - mpv"))
                 value = value.Replace("} - mpv", "} - mpv-gui");
 
-            _Title = value;
+            _title = value;
         }
     }
 
@@ -914,7 +914,7 @@ public partial class MainForm : Form
                 break;
             case 0x319: // WM_APPCOMMAND
                 {
-                    string value = Input.WM_APPCOMMAND_to_mpv_key((int)(m.LParam.ToInt64() >> 16 & ~0xf000));
+                    string? value = Input.WM_APPCOMMAND_to_mpv_key((int)(m.LParam.ToInt64() >> 16 & ~0xf000));
 
                     if (value != null)
                     {
@@ -982,7 +982,7 @@ public partial class MainForm : Form
                 return;
             case 0x4A: // WM_COPYDATA
                 {
-                    var copyData = (COPYDATASTRUCT)m.GetLParam(typeof(COPYDATASTRUCT));
+                    var copyData = (COPYDATASTRUCT)m.GetLParam(typeof(COPYDATASTRUCT))!;
                     string[] args = copyData.lpData.Split('\n');
                     string mode = args[0];
                     args = args.Skip(1).ToArray();
@@ -1022,25 +1022,25 @@ public partial class MainForm : Form
 
                     Point pt = PointToClient(new Point(x, y));
                     Size cs = ClientSize;
-                    m.Result = new IntPtr(HTCLIENT);
+                    m.Result = HTCLIENT;
                     int distance = FontHeight / 3;
 
                     if (pt.X >= cs.Width - distance && pt.Y >= cs.Height - distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTBOTTOMRIGHT;
+                        m.Result = HTBOTTOMRIGHT;
                     else if (pt.X <= distance && pt.Y >= cs.Height - distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTBOTTOMLEFT;
+                        m.Result = HTBOTTOMLEFT;
                     else if (pt.X <= distance && pt.Y <= distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTTOPLEFT;
+                        m.Result = HTTOPLEFT;
                     else if (pt.X >= cs.Width - distance && pt.Y <= distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTTOPRIGHT;
+                        m.Result = HTTOPRIGHT;
                     else if (pt.Y <= distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTTOP;
+                        m.Result = HTTOP;
                     else if (pt.Y >= cs.Height - distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTBOTTOM;
+                        m.Result = HTBOTTOM;
                     else if (pt.X <= distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTLEFT;
+                        m.Result = HTLEFT;
                     else if (pt.X >= cs.Width - distance && cs.Height >= distance)
-                        m.Result = (IntPtr)HTRIGHT;
+                        m.Result = HTRIGHT;
 
                     return;
                 }
@@ -1077,7 +1077,7 @@ public partial class MainForm : Form
         else if (((Environment.TickCount - LastCursorChanged > 1500 &&
             !IsMouseInOSC()) || Environment.TickCount - LastCursorChanged > 5000) &&
             ClientRectangle.Contains(PointToClient(MousePosition)) &&
-            ActiveForm == this && !ContextMenu.IsVisible && !IsCommandPaletteVissible())
+            ActiveForm == this && !ContextMenu!.IsVisible)
 
             HideCursor();
     }
@@ -1185,11 +1185,11 @@ public partial class MainForm : Form
         if (WindowState == FormWindowState.Maximized)
             Player.SetPropertyBool("window-maximized", true);
 
-        WPF.Init();
+        ApplicationHelp.Init();
         Theme.UpdateWpfColors();
-        MessageBoxEx.MessageForeground = Theme.Current.GetBrush("heading");
-        MessageBoxEx.MessageBackground = Theme.Current.GetBrush("background");
-        MessageBoxEx.ButtonBackground  = Theme.Current.GetBrush("highlight");
+        MessageBoxEx.MessageForeground = Theme.Current?.GetBrush("heading");
+        MessageBoxEx.MessageBackground = Theme.Current?.GetBrush("background");
+        MessageBoxEx.ButtonBackground  = Theme.Current?.GetBrush("highlight");
         ContextMenu = new WpfControls.ContextMenu();
         ContextMenu.Closed += ContextMenu_Closed;
         ContextMenu.UseLayoutRounding = true;
@@ -1269,7 +1269,7 @@ public partial class MainForm : Form
     {
         base.OnDragEnter(e);
 
-        if (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
+        if (e.Data!.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
             e.Effect = DragDropEffects.Copy;
     }
 
@@ -1277,10 +1277,10 @@ public partial class MainForm : Form
     {
         base.OnDragDrop(e);
 
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            Player.LoadFiles(e.Data.GetData(DataFormats.FileDrop) as String[], true, false);
+        if (e.Data!.GetDataPresent(DataFormats.FileDrop))
+            Player.LoadFiles(e.Data.GetData(DataFormats.FileDrop) as string[], true, false);
         else if (e.Data.GetDataPresent(DataFormats.Text))
-            Player.LoadFiles(new[] { e.Data.GetData(DataFormats.Text).ToString() }, true, false);
+            Player.LoadFiles((new[] { e.Data.GetData(DataFormats.Text)!.ToString() })!, true, false);
     }
 
     protected override void OnLostFocus(EventArgs e)
@@ -1296,12 +1296,6 @@ public partial class MainForm : Form
             e.SuppressKeyPress = true;
 
         base.OnKeyDown(e);
-    }
-
-    protected override void OnLayout(LayoutEventArgs args)
-    {
-        base.OnLayout(args);
-        AdjustCommandPaletteLeftAndWidth();
     }
 
     static bool IsCursorVisible = true;
@@ -1326,19 +1320,6 @@ public partial class MainForm : Form
 
     static bool IsCursorPosDifferent(Point screenPos) =>
         Math.Abs(screenPos.X - MousePosition.X) > 10 || Math.Abs(screenPos.Y - MousePosition.Y) > 10;
-
-    void AdjustCommandPaletteLeftAndWidth()
-    {
-        if (CommandPaletteHost == null)
-            return;
-
-        CommandPaletteHost.Width = FontHeight * 26;
-
-        if (CommandPaletteHost.Width > ClientSize.Width)
-            CommandPaletteHost.Width = ClientSize.Width;
-
-        CommandPaletteHost.Left = (ClientSize.Width - CommandPaletteHost.Size.Width) / 2;
-    }
 
     static int GetDPI(IntPtr hwnd)
     {

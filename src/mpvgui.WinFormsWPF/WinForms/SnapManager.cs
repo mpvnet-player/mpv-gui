@@ -3,9 +3,9 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-using static mpvgui.Native.WinAPI;
+using static mpvgui.WinFormsWPF.Native.WinAPI;
 
-namespace mpvgui.WinForms;
+namespace mpvgui.WinFormsWPF.WinForms;
 
 public class SnapManager
 {

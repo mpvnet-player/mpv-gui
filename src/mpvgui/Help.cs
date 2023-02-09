@@ -30,7 +30,7 @@ public static class FileHelp
 
 public static class ProcessHelp
 {
-    public static void Execute(string file, string arguments = "", bool shellExecute = false)
+    public static void Execute(string? file, string? arguments = "", bool shellExecute = false)
     {
         using Process proc = new Process();
         proc.StartInfo.FileName = file;
@@ -39,5 +39,5 @@ public static class ProcessHelp
         proc.Start();
     }
 
-    public static void ShellExecute(string file, string arguments = "") => Execute(file, arguments, true);
+    public static void ShellExecute(string? file, string? arguments = "") => Execute(file, arguments, true);
 }
