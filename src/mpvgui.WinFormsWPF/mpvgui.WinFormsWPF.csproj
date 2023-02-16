@@ -28,4 +28,12 @@
       <ProjectReference Include="..\mpvgui\mpvgui.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Page Update="WPF\View\AboutWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

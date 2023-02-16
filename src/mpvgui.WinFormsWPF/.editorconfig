@@ -20,3 +20,6 @@ dotnet_diagnostic.IDE0010.severity = none
 
 # IDE0044: Add readonly modifier
 dotnet_diagnostic.IDE0044.severity = silent
+
+# Member does not access instance data and can be marked as static
+dotnet_diagnostic.CA1822.severity = none

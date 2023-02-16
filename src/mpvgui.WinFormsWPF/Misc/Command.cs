@@ -6,6 +6,7 @@ using System.Windows.Interop;
 
 using mpvgui.WinFormsWPF.WinForms;
 using mpvgui.WinFormsWPF.WPF;
+using mpvgui.WinFormsWPF.WPF.View;
 
 namespace mpvgui.WinFormsWPF;
 

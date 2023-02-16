@@ -1,0 +1,59 @@
+﻿<Window
+    x:Class="mpvgui.WinFormsWPF.WPF.View.AboutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:mpvgui.WinFormsWPF.WPF.ViewModel"
+    mc:Ignorable="d"
+    
+    Name="AboutWindowInstance"
+    Title="About mpv-gui"
+    FontSize="16"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    Foreground="{Binding Theme.Foreground}"
+    Background="{Binding Theme.Background}"
+    >
+    
+    <Window.DataContext>  
+        <vm:AboutViewModel/>  
+    </Window.DataContext>                
+    
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Escape"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AboutWindowInstance}"
+            />
+        <KeyBinding
+            Key="Enter"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AboutWindowInstance}"
+        />
+        <KeyBinding
+            Key="Space"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AboutWindowInstance}"
+        />
+        <MouseBinding
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AboutWindowInstance}"
+            MouseAction="LeftClick"
+        />
+        <MouseBinding
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AboutWindowInstance}"
+            MouseAction="RightClick"
+        />
+    </Window.InputBindings>
+    
+    <Grid>
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock FontSize="30" TextAlignment="Center"  Margin="10,10,10,0">mpv-gui</TextBlock>
+            <TextBlock Text="{Binding About}" TextAlignment="Center" Margin="20,10,20,20"></TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

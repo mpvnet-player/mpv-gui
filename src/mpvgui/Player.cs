@@ -123,6 +123,8 @@ public class PlayerClass
         SetPropertyString("force-window", "yes");
         SetPropertyString("config-dir", ConfigFolder);
         SetPropertyString("config", "yes");
+        
+        //SetPropertyString("input-conf", @"C:\Users\frank\AppData\Roaming\mpv-gui\trash\test-input.conf");
 
         ProcessCommandLine(true);
 
@@ -415,7 +417,7 @@ public class PlayerClass
                             if (LogMessage != null)
                             {
                                 string msg = $"[{ConvertFromUtf8(data.prefix)}] {ConvertFromUtf8(data.text)}";
-                                LogMessage?.Invoke(data.log_level, msg);
+                                LogMessage.Invoke(data.log_level, msg);
                             }
                         }
                         break;
