@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:vm="clr-namespace:mpvgui.WinFormsWPF.WPF.ViewModel"
     mc:Ignorable="d"
     
-    Name="AboutWindowInstance"
     Title="About mpv-gui"
     FontSize="16"
     ShowInTaskbar="False"
@@ -22,33 +22,20 @@
         <vm:AboutViewModel/>  
     </Window.DataContext>                
     
-    <Window.InputBindings>
-        <KeyBinding
-            Key="Escape"
-            Command="{Binding CloseCommand}"
-            CommandParameter="{Binding ElementName=AboutWindowInstance}"
-            />
-        <KeyBinding
-            Key="Enter"
-            Command="{Binding CloseCommand}"
-            CommandParameter="{Binding ElementName=AboutWindowInstance}"
-        />
-        <KeyBinding
-            Key="Space"
-            Command="{Binding CloseCommand}"
-            CommandParameter="{Binding ElementName=AboutWindowInstance}"
-        />
-        <MouseBinding
-            Command="{Binding CloseCommand}"
-            CommandParameter="{Binding ElementName=AboutWindowInstance}"
-            MouseAction="LeftClick"
-        />
-        <MouseBinding
-            Command="{Binding CloseCommand}"
-            CommandParameter="{Binding ElementName=AboutWindowInstance}"
-            MouseAction="RightClick"
-        />
-    </Window.InputBindings>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="KeyDown">
+            <b:CallMethodAction 
+                MethodName="Close"
+                TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                />
+        </b:EventTrigger>
+        <b:EventTrigger EventName="MouseDown">
+            <b:CallMethodAction 
+                MethodName="Close"
+                TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     
     <Grid>
         <StackPanel HorizontalAlignment="Center">
