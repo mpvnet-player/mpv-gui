@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mpvgui.WinFormsWPF", "mpvgui.WinFormsWPF\mpvgui.WinFormsWPF.csproj", "{ADC341B5-863A-4DFB-9352-475518FABE91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mpvgui.Windows", "mpvgui.Windows\mpvgui.Windows.csproj", "{ADC341B5-863A-4DFB-9352-475518FABE91}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mpvgui", "mpvgui\mpvgui.csproj", "{0B524801-DA28-433F-808D-3F74EF81EB53}"
 EndProject
